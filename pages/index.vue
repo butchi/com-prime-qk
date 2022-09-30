@@ -2,18 +2,14 @@
   <v-row class="d-flex align-start">
     <v-col cols="12" md="8">
       <v-row no-gutters class="d-flex align-end mb-5">
-        <v-col cols="12" sm="11">
-          <v-row class="ma-0 pa-0">
-            <v-col v-for="(num, pos) in handNumArr" :key="pos" :class="`${isXs ? 'mr-1' : 'ma-1'} pa-0`">
-              <Card :isDisable="selectPositionArr.includes(pos)" :number="num"></Card>
-            </v-col>
-          </v-row>
+        <v-col v-for="(num, pos) in handNumArr" :key="pos" :class="`${isXs ? 'mr-1' : ''} ma-0 pa-1`" cols="1">
+          <Card :isDisable="selectPositionArr.includes(pos)" :number="num"></Card>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="ma-1 pa-3">
-          <CardLine v-for="(cardLine, lineIdx) in cardLineArr.filter(cardLine => cardLine.cardNumSeq.length > 0)"
-            :phase="phase" :cardNumSeq="cardLine.cardNumSeq" :cardNumSeqSucc="cardLine.cardNumSeqSucc"
+          <CardLine v-for="(cardLine, lineIdx) in cardLineArr.slice(0, -1).reverse()" :phase="phase"
+            :cardNumSeq="cardLine.cardNumSeq" :cardNumSeqSucc="cardLine.cardNumSeqSucc"
             :isCurrent="lineIdx === curLineIdx" :isDisable="true" :isGrothen="cardLine.isGrothen" :key="lineIdx">
           </CardLine>
         </v-col>
@@ -45,18 +41,6 @@ const primeQ = x => {
   return true
 }
 
-const getBlankCardLineArr = () => {
-  return Array(11).fill(0).map(() => ({
-    cardNumSeq: [],
-    cardNumSeqSucc: [],
-    isExact: false,
-    isSuccess: false,
-    isGrothen: false,
-    isX3: false,
-    isGrothen: false,
-  }))
-}
-
 export default {
   name: 'IndexPage',
   data: () => {
@@ -71,7 +55,15 @@ export default {
       selectPositionArr: Array(11).fill(0).map((_, i) => i),
       curLineIdx: 0,
       handNumArr: Array(11).fill(14),
-      cardLineArr: getBlankCardLineArr(),
+      cardLineArr: [{
+        cardNumSeq: [],
+        cardNumSeqSucc: [],
+        isExact: false,
+        isSuccess: false,
+        isGrothen: false,
+        isX3: false,
+        isGrothen: false,
+      }],
       phase: "lobby",
       timer: null,
     }
@@ -88,7 +80,7 @@ export default {
     append(num, pos) {
       this.selectPositionArr.push(pos)
 
-      this.cardLineArr[this.curLineIdx].cardNumSeq.push(num)
+      this.cardLineArr.at(-1).cardNumSeq.push(num)
     },
     primeNumSucc({ cardLine }) {
       return numberFromArray(cardLine.cardNumSeqSucc)
@@ -100,10 +92,12 @@ export default {
 
       this.handNumArr = this.deckArr.slice(0, 11)
 
-      this.timer = setInterval(this.execTurn, 1999)
+      this.execTurn()
     },
-    execTurn() {
-      const cardPosArr = this.pickCard()
+    async execTurn() {
+      const cardPosArr = await this.pickCard()
+
+      await new Promise(resolve => setTimeout(resolve, 300))
 
       if (cardPosArr.length === 0) {
         clearInterval(this.timer)
@@ -113,68 +107,105 @@ export default {
         return
       }
 
-      cardPosArr.forEach(cardPos => {
-        this.selectCard(this.handNumArr[cardPos], cardPos)
+      cardPosArr.forEach(async (cardPos, idx) => {
+        setTimeout(_ => {
+          this.selectCard(this.handNumArr[cardPos], cardPos)
+        }, idx * 300)
       })
 
-      setTimeout(_ => {
-        this.curLineIdx++
+      await new Promise(resolve => setTimeout(resolve, cardPosArr.length * 300 + 300))
 
-        this.phase = "result"
+      this.cardLineArr.push({
+        cardNumSeq: [],
+        cardNumSeqSucc: [],
+        isExact: false,
+        isSuccess: false,
+        isGrothen: false,
+        isX3: false,
+        isGrothen: false,
+      })
 
-        cardPosArr.forEach(cardPos => {
-          this.handNumArr[cardPos] = Math.ceil(Math.random() * 13)
-        })
+      this.phase = "result"
 
-        this.selectPositionArr.length = 0
+      cardPosArr.forEach(cardPos => {
+        // this.handNumArr[cardPos] = 2 * Math.ceil(Math.random() * 6)
+        this.handNumArr[cardPos] = Math.ceil(Math.random() * 13)
+      })
+      this.handNumArr.length = 11
 
-        this.phase = "edit"
-      }, 999)
+      this.selectPositionArr.length = 0
+
+      this.phase = "edit"
+
+      await new Promise(resolve => setTimeout(resolve, 999))
+
+      this.execTurn()
     },
     pickCard() {
       let ret = []
 
-      let lenPriority = 2
+      let lenPriorityArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].sort(_ => Math.random() - .5)
 
-      const cardPosArr = []
+      let cardPosSeq = []
 
-      for (let i = 1; i <= 9; i += 2) {
-        if (i === 5) {
-          break
-        }
+      const findPrimeCardPosSeq = numSeq => {
+        let ret = []
 
-        const tailOdd = i
+        let randomPosSeq = []
 
-        const tailOddPos = this.handNumArr.indexOf(tailOdd)
+        for (let lenPriorityIdx = 0; lenPriorityIdx < lenPriorityArr.length; lenPriorityIdx++) {
+          const lenPriority = lenPriorityArr[lenPriorityIdx]
 
-        if (lenPriority === 2 && tailOddPos !== -1) {
-          for (let i = 0; i < this.handNumArr.length; i++) {
-            const pos = i
+          randomPosSeq = (new Array(numSeq.length)).fill(0).map((_, i) => i).slice(0).sort(_ => Math.random() - .5).slice(0, lenPriority)
 
-            if (pos === tailOddPos) {
-              break
-            }
-
-            const n = numberFromArray([
-              this.handNumArr[pos],
-              this.handNumArr[tailOddPos]
-            ])
-
-            if (primeQ(n)) {
-              cardPosArr.push(pos)
-              cardPosArr.push(tailOddPos)
-
-              break
-            }
+          if (lenPriority > 1 && ![1, 3, 7, 9, 11, 13].includes(numSeq[randomPosSeq.at(-1)])) {
+            continue
           }
         }
 
-        if (cardPosArr.length > 0) {
-          break
+        const n = numberFromArray(
+          randomPosSeq.map(pos => numSeq[pos])
+        )
+
+        if (primeQ(n)) {
+          ret = randomPosSeq
+        }
+
+        return ret
+      }
+
+      for (let i = 0; i <= 9999; i++) {
+        cardPosSeq = findPrimeCardPosSeq(this.handNumArr)
+
+        if (cardPosSeq.length > 0) {
+          ret = cardPosSeq
+
+          return ret
         }
       }
 
-      ret = cardPosArr
+      const helpCardNumArr = [1, 3, 7, 9]
+
+      for (let i = 0; i <= 9999; i++) {
+        for (let helpCardNumIdx = 0; helpCardNumIdx < helpCardNumArr.length; helpCardNumIdx++) {
+          const helpCardNum = helpCardNumArr[helpCardNumIdx]
+
+          cardPosSeq = findPrimeCardPosSeq([
+            this.handNumArr.slice(0),
+            [helpCardNum],
+          ].flat())
+
+          if (cardPosSeq.length > 0) {
+            this.handNumArr.push(helpCardNum)
+
+            ret = cardPosSeq
+
+            return ret
+          }
+        }
+      }
+
+      ret = cardPosSeq
 
       return ret
     },
@@ -185,7 +216,15 @@ export default {
 
       this.selectPositionArr.length = 0
 
-      this.cardLineArr = getBlankCardLineArr()
+      this.cardLineArr = [{
+        cardNumSeq: [],
+        cardNumSeqSucc: [],
+        isExact: false,
+        isSuccess: false,
+        isGrothen: false,
+        isX3: false,
+        isGrothen: false,
+      }]
     },
     selectCard(num, pos) {
       if (this.selectPositionArr.includes(pos)) {
