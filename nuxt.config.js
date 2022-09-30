@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - qumi-kiri',
-    title: 'qumi-kiri',
+    titleTemplate: '%s - prime-qk.com',
+    title: 'prime-qk.com',
     htmlAttrs: {
       lang: 'en',
     },
