@@ -1,16 +1,12 @@
 <template>
-    <v-card
-        :disabled="isDisable"
-        class="card"
-        ref="card"
-    >
-        <v-responsive
-            v-if="width"
-            :aspect-ratio="57/89"
-        >
-            <div class="sub-text pa-0" :style="{ left: 0, top: 0, fontSize: `${width * .35}px`, transform: 'rotate(0)' }">{{ cardStr }}</div>
+    <v-card :disabled="isDisable" class="card" ref="card">
+        <v-responsive v-if="width" :aspect-ratio="57/89">
+            <div class="sub-text pa-0"
+                :style="{ left: 0, top: 0, fontSize: `${width * .35}px`, transform: 'rotate(0)' }">{{ cardStr }}</div>
             <div class="main-text pa-0" :style="{ fontSize: `${width * .6}px` }">{{ cardNum }}</div>
-            <div class="sub-text pa-0" :style="{ left: '100%', top: '100%', fontSize: `${width * .35}px`, marginLeft: '-24px', marginTop: '-24px', transform: 'rotate(180deg)'  }">{{ cardStr }}</div>
+            <div class="sub-text pa-0"
+                :style="{ left: '100%', top: '100%', fontSize: `${width * .35}px`, marginLeft: '-24px', marginTop: '-24px', transform: 'rotate(180deg)'  }">
+                {{ cardStr }}</div>
         </v-responsive>
     </v-card>
 </template>
@@ -36,13 +32,13 @@ export default {
                 13: "K",
                 14: "?",
                 15: "X",
-            } [this.number]) || this.number.toString()
+            }[this.number]) || this.number.toString()
         },
         cardNum() {
             return ({
                 14: "?",
                 15: "X"
-            }) [this.number] || this.number.toString()
+            })[this.number] || this.number.toString()
         },
     },
     mounted() {
