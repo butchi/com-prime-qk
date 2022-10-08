@@ -1,10 +1,11 @@
 <template>
     <v-card :disabled="isDisable" class="card" ref="card">
         <v-responsive v-if="width" :aspect-ratio="57/89">
-            <div class="sub-text pa-0"
+            <div v-if="!isMiniCard" class="sub-text pa-0"
                 :style="{ left: 0, top: 0, fontSize: `${width * .35}px`, transform: 'rotate(0)' }">{{ cardStr }}</div>
-            <div class="main-text pa-0" :style="{ fontSize: `${width * .6}px` }">{{ cardNum }}</div>
-            <div class="sub-text pa-0"
+            <div class="main-text pa-0" :style="{ fontSize: `${width * .6}px` }">{{ isMiniCard ? cardStr : cardNum }}
+            </div>
+            <div v-if="!isMiniCard" class="sub-text pa-0"
                 :style="{ left: '100%', top: '100%', fontSize: `${width * .35}px`, marginLeft: '-24px', marginTop: '-24px', transform: 'rotate(180deg)'  }">
                 {{ cardStr }}</div>
         </v-responsive>
@@ -23,6 +24,9 @@ export default {
         }
     },
     computed: {
+        isMiniCard() {
+            return this.width < 15
+        },
         cardStr() {
             return ({
                 1: "A",
