@@ -87,6 +87,10 @@ export default {
     user-select: none;
 }
 
+.card {
+    transition: background-color 0.15s;
+}
+
 .card.v-card--disabled {
     background-color: #e0e0e0;
 }
