@@ -100,7 +100,11 @@ export default {
             if (cardPosArr.length === 0) {
                 clearInterval(this.timer)
 
-                this.playDemo()
+                this.deckArr.sort(() => Math.random() - .5)
+
+                this.handNumArr = this.deckArr.slice(0, 11)
+
+                this.execTurn()
 
                 return
             }
@@ -182,7 +186,8 @@ export default {
                 }
             }
 
-            const helpCardNumArr = [1, 3, 7, 9]
+            // const helpCardNumArr = [2, 4, 6, 8, 10, 12]
+            const helpCardNumArr = [1, 3, 7, 9, 11, 13]
 
             for (let i = 0; i <= 99; i++) {
                 for (let helpCardNumIdx = 0; helpCardNumIdx < helpCardNumArr.length; helpCardNumIdx++) {
