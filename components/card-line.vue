@@ -3,7 +3,7 @@
         <v-row v-if="cardNumSeq.length > 0">
             <v-col cols="12" md="6">
                 <v-row class="d-flex align-end">
-                    <v-col v-for="(num, pos) in cardNumSeq" :key="pos" cols="1" class="ma-0 pa-1">
+                    <v-col v-for="(num, pos) in cardNumSeq" :key="pos" cols="1" class="ma-0 ml-1 pa-0 py-1">
                         <Card :isDisable="isDisable" :number="num"></Card>
                     </v-col>
                 </v-row>
@@ -12,7 +12,7 @@
         <v-row v-else-if="isCurrent">
             <v-col cols="12" md="6">
                 <v-row>
-                    <v-col cols="1" class="ma-0 pa-1">
+                    <v-col cols="1" class="mr-1 pa-0">
                         <Card :isDisable="true" :number="14"></Card>
                     </v-col>
                 </v-row>
