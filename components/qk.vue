@@ -173,7 +173,7 @@ export default {
                 return ret
             }
 
-            for (let i = 0; i <= 9999; i++) {
+            for (let i = 0; i <= 99; i++) {
                 cardPosSeq = findPrimeCardPosSeq(this.handNumArr)
 
                 if (cardPosSeq.length > 0) {
@@ -185,7 +185,7 @@ export default {
 
             const helpCardNumArr = [1, 3, 7, 9]
 
-            for (let i = 0; i <= 9999; i++) {
+            for (let i = 0; i <= 99; i++) {
                 for (let helpCardNumIdx = 0; helpCardNumIdx < helpCardNumArr.length; helpCardNumIdx++) {
                     const helpCardNum = helpCardNumArr[helpCardNumIdx]
 
