@@ -36,6 +36,12 @@ export default {
           title: 'ホーム',
           to: '/',
         },
+        {
+          icon: 'mdi-magnify',
+          title: '素数検索',
+          to: '/prime-search/',
+        },
+      ],
       title: 'prime-qk.com',
     }
   },
