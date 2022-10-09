@@ -1,7 +1,7 @@
 <template>
-    <v-col>
+    <v-col class="pa-0">
         <v-row no-gutters class="d-flex align-end mb-5">
-            <v-col v-for="(num, pos) in handNumArr" :key="pos" :class="`${isXs ? 'mr-1' : ''} ma-0 pa-1`" cols="1">
+            <v-col v-for="(num, pos) in handNumArr" :key="pos" :class="`${isXs ? 'mr-0 pr-1' : 'pa-1'} ma-0`" cols="1">
                 <Card :isDisable="selectPositionArr.includes(pos)" :number="num"></Card>
             </v-col>
         </v-row>
