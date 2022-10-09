@@ -2,14 +2,17 @@
     <v-card :disabled="isDisable" class="card" ref="card">
         <v-responsive v-if="width" :aspect-ratio="57/89">
             <div v-if="!isMiniCard" class="sub-text pa-0"
-                :style="{ left: 0, top: 0, fontSize: `${width * .35}px`, transform: 'rotate(0)' }">{{ cardStr }}</div>
-            <div class="main-text pa-0" :style="{ fontSize: `${width * .6}px` }">{{ isMiniCard ? cardStr : cardNum }}
+                :style="{ left: 0, top: 0, fontSize: `${width * .35}px`, transform: 'rotate(0)' }">{{ cardStr }}
+            </div>
+            <div class="main-text pa-0" :style="{ fontSize: `${width * .6}px` }">{{ isMiniCard ? cardStr : cardNum
+            }}
             </div>
             <div v-if="!isMiniCard" class="sub-text pa-0"
                 :style="{ left: '100%', top: '100%', fontSize: `${width * .35}px`, marginLeft: '-24px', marginTop: '-24px', transform: 'rotate(180deg)'  }">
                 {{ cardStr }}</div>
         </v-responsive>
     </v-card>
+    </v-hover>
 </template>
 
 <script>
@@ -36,12 +39,16 @@ export default {
                 13: "K",
                 14: "?",
                 15: "X",
+                NaN: "?",
+                Infinity: "X",
             }[this.number]) || this.number.toString()
         },
         cardNum() {
             return ({
                 14: "?",
-                15: "X"
+                15: "X",
+                NaN: "?",
+                Infinity: "X",
             })[this.number] || this.number.toString()
         },
     },
@@ -62,6 +69,10 @@ export default {
 <style lang="scss" scoped>
 .card {
     background-color: #fcfcfc;
+}
+
+.card:hover {
+    background-color: #f0f0f0;
 }
 
 .main-text {

@@ -8,8 +8,7 @@
         <v-row>
             <v-col class="ma-1 pa-3">
                 <CardLine v-for="(cardLine, lineIdx) in cardLineArr.slice(0, -1).reverse()" :phase="phase"
-                    :cardNumSeq="cardLine.cardNumSeq" :cardNumSeqSucc="cardLine.cardNumSeqSucc"
-                    :isCurrent="lineIdx === curLineIdx" :isDisable="true" :isGrothen="cardLine.isGrothen"
+                    :cardNumSeq="cardLine.cardNumSeq" :isCurrent="lineIdx === curLineIdx" :isDisable="true"
                     :key="lineIdx">
                 </CardLine>
             </v-col>
