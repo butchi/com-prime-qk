@@ -42,7 +42,7 @@
                         <v-row v-for="y in [0, 1, 2]" :key="y">
                             <v-col v-for="x in [0, 1, 2, 3, 4]" :key="x" class="pa-1"
                                 @click="strSearch += { 10: 'T', 11: 'J', 12: 'Q', 13: 'K', 14: 'X' }[x + y * 5] || x + y * 5">
-                                <Card :is-disable="x + y * 5 > 13" :number=" x + y * 5 === 14 ? Infinity : x + y * 5">
+                                <Card :is-disable="x + y * 5 > 13" :number="x + y * 5 === 14 ? Infinity : x + y * 5">
                                 </Card>
                             </v-col>
                         </v-row>
