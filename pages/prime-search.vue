@@ -85,6 +85,70 @@
 <script>
 import Card from '~/components/card.vue'
 
+// [How to Find Very Large Prime Numbers in JavaScript | by Jeff Lowery | JavaScript in Plain English](https://javascript.plainenglish.io/how-to-find-very-large-prime-numbers-in-javascript-5a563ba2f3bb)
+// [Miller-Rabin test using BigInt](https://gist.github.com/JeffML/424a448f1c10d85e10de000420fa1b8d#file-millerrabintest-js)
+
+const power = (x, y, p) => {
+    let res = 1n
+
+    x = x % p
+
+    while (y > 0n) {
+        if (y & 1n) {
+            res = (res * x) % p
+        }
+
+        y = y / 2n
+        x = (x * x) % p
+    }
+
+    return res
+}
+
+const miillerTest = (d, n) => {
+    const r = BigInt(Math.floor(Math.random() * 100000))
+    const y = r * (n - 2n) / 100000n
+    let a = 2n + y % (n - 4n)
+
+    let x = power(a, d, n)
+
+    if (x == 1n || x == n - 1n) {
+        return true
+    }
+
+    while (d != n - 1n) {
+        x = (x * x) % n
+        d *= 2n
+
+        if (x == 1n) {
+            return false
+        }
+        if (x == n - 1n) {
+            return true
+        }
+    }
+
+    return false
+}
+
+function probablyPrimeQ(n, k = 40) {
+    if (n <= 1n || n == 4n) return false
+    if (n <= 3n) return true
+
+    let d = n - 1n
+    while (d % 2n == 0n) {
+        d /= 2n
+    }
+
+    for (let i = 0; i < k; i++) {
+        if (!miillerTest(d, n)) {
+            return false
+        }
+    }
+
+    return true
+}
+
 const primeQ = x => {
     if (x * 0n !== 0n) {
         return false
@@ -140,7 +204,7 @@ export default {
                 return
             }
 
-            const isPrime = primeQ(num)
+            const isPrime = probablyPrimeQ(num)
             const isX2 = (num > 2n) && (num % 2n)
             const isX3 = (num > 3n) && (num % 3n)
             const isX5 = (num > 5n) && (num % 5n)
