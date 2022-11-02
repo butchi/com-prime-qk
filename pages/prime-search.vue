@@ -123,11 +123,11 @@ export default {
             }
 
             const strRepl = str.toUpperCase()
-                .replace("A", "1")
-                .replace("T", "10")
-                .replace("J", "11")
-                .replace("Q", "12")
-                .replace("K", "13")
+                .replaceAll("A", "1")
+                .replaceAll("T", "10")
+                .replaceAll("J", "11")
+                .replaceAll("Q", "12")
+                .replaceAll("K", "13")
 
             const ret = BigInt(strRepl)
 
