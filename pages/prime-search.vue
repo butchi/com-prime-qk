@@ -149,23 +149,23 @@ function probablyPrimeQ(n, k = 40) {
     return true
 }
 
-const primeQ = x => {
-    if (x * 0n !== 0n) {
-        return false
-    }
-    if (x <= 3n) {
-        return x > 1n
-    }
-    if (x % 2n === 0 || x % 3n === 0) {
-        return false
-    }
-    for (let i = 5n; i * i <= x; i += 6n) {
-        if (x % i === 0n || x % (i + 2n) === 0n) {
-            return false
-        }
-    }
-    return true
-}
+// const primeQ = x => {
+//     if (x * 0n !== 0n) {
+//         return false
+//     }
+//     if (x <= 3n) {
+//         return x > 1n
+//     }
+//     if (x % 2n === 0 || x % 3n === 0) {
+//         return false
+//     }
+//     for (let i = 5n; i * i <= x; i += 6n) {
+//         if (x % i === 0n || x % (i + 2n) === 0n) {
+//             return false
+//         }
+//     }
+//     return true
+// }
 
 export default {
     name: "PrimeSearch",
