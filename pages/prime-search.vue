@@ -15,6 +15,8 @@
 
                     <v-card-text>
                         {{ result.number }}は{{ result.isPrime ? "素数です！" : "素数ではありません！" }}
+
+                        {{ Array.from(parseIntStr(result.number.toString(10), 15)) }}
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -87,7 +89,6 @@ import Card from '~/components/card.vue'
 
 // [How to Find Very Large Prime Numbers in JavaScript | by Jeff Lowery | JavaScript in Plain English](https://javascript.plainenglish.io/how-to-find-very-large-prime-numbers-in-javascript-5a563ba2f3bb)
 // [Miller-Rabin test using BigInt](https://gist.github.com/JeffML/424a448f1c10d85e10de000420fa1b8d#file-millerrabintest-js)
-
 const power = (x, y, p) => {
     let res = 1n
 
@@ -131,7 +132,7 @@ const miillerTest = (d, n) => {
     return false
 }
 
-function probablyPrimeQ(n, k = 40) {
+const probablyPrimeQ = (n, k = 40) => {
     if (n <= 1n || n == 4n) return false
     if (n <= 3n) return true
 
@@ -147,6 +148,56 @@ function probablyPrimeQ(n, k = 40) {
     }
 
     return true
+}
+
+const parseIntStr = (str, len = Infinity) => {
+    const replaceAt = (str, n, char) => {
+        if (n > str.length) {
+            return null
+        }
+
+        if (n === 0) {
+            return char + str.slice(1)
+        }
+
+        return str.slice(0, n) + char + str.slice(n + 1)
+    }
+
+    const arr = []
+
+    const strRepl = str.split("").join(",").replaceAll(/1,/g, "1;")
+
+    const posArr = strRepl.split("").map((char, i) => char === ";" ? i : null).filter(idx => idx !== null)
+
+    for (let posFlagInt = 0; posFlagInt < 2 ** posArr.length; posFlagInt++) {
+        if (posFlagInt > len) {
+            break
+        }
+
+        let tmpStr = strRepl
+
+        for (let i = 0; i < posFlagInt; i++) {
+            if (posFlagInt.toString(2).split("").reverse()[i] === "1") {
+                tmpStr = replaceAt(tmpStr, posArr[i], "+")
+            }
+        }
+
+        const seq = tmpStr.replaceAll(";", ",").replaceAll("+", "").split(",").map(str => parseInt(str))
+
+        arr.push(seq)
+    }
+
+    const arrFilt = arr.filter(seq => seq.every(int => int >= 0 && int <= 13))
+
+    const ret = (Array.from(new Set(arrFilt.map(seq => seq.join(","))))).map(seqTxt => seqTxt.split(",").map(n => ({
+        "1": "A",
+        "10": "T",
+        "11": "J",
+        "12": "Q",
+        "13": "K",
+    }[n] || n)).join(""))
+
+    return ret
 }
 
 // const primeQ = x => {
@@ -196,6 +247,9 @@ export default {
             const ret = BigInt(strRepl)
 
             return ret
+        },
+        parseIntStr(str, len) {
+            return parseIntStr(str, len)
         },
         search(str) {
             const num = this.parseQkString(str)
